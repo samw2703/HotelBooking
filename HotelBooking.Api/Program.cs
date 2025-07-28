@@ -1,6 +1,13 @@
+using HotelBooking.Core.Services.Hotels;
+using HotelBooking.Core;
+using HotelBooking.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCoreServices();
+builder.Services.AddDataServices(builder.Configuration);
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -13,6 +20,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.EnsureUpdated();
+}
 
 var summaries = new[]
 {
@@ -32,6 +44,17 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+
+app.MapGet("/hotels", async (string name, IHotelService hotelService) =>
+{
+    var hotel = await hotelService.FindByNameAsync(name);
+
+    if (hotel == null)
+        return Results.NotFound();
+
+    return Results.Ok(hotel);
+})
+.WithName("GetHotelByName");
 
 app.Run();
 
