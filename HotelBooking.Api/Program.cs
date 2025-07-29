@@ -99,7 +99,7 @@ If the same key is sent again, the existing booking will be returned.")
 .Produces<string>(StatusCodes.Status404NotFound)
 .WithOpenApi();
 
-app.MapPost("/bookings/{reference}", async (string reference, [FromServices] IBookingService bookingService) =>
+app.MapGet("/bookings/{reference}", async (string reference, [FromServices] IBookingService bookingService) =>
 {
     var details = await bookingService.GetBookingDetails(reference);
 

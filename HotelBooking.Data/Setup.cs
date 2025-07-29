@@ -14,6 +14,7 @@ public static class Setup
             options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
 
         services.AddScoped<IHotelRepository, HotelRepository>();
+        services.AddScoped<IBookingRepository, BookingRepository>();
     }
 
     public static void EnsureUpdated(this IServiceScope scope)
