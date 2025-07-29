@@ -1,11 +1,20 @@
 ﻿using HotelBooking.Core.DTOs;
+using HotelBooking.Core.Entities;
+using HotelBooking.Core.Repositories;
 
 namespace HotelBooking.Core.Services.Hotels;
 
-internal class HotelService : IHotelService
+internal class HotelService(IHotelRepository hotelRepository) : IHotelService
 {
-    public Task<HotelDto?> FindByNameAsync(string name)
+    public async Task<HotelDto?> FindByName(string name)
     {
-        throw new NotImplementedException();
+        var hotel = await hotelRepository.FindByName(name);
+
+        return hotel == null ? null : new HotelDto { HotelId = hotel.HotelId, Name = hotel.Name };
     }
+
+    public async Task<HotelDto[]> GetAll() 
+        => (await hotelRepository.GetAll()).Select(Map).ToArray();
+
+    private static HotelDto Map(Hotel hotel) => new HotelDto { HotelId = hotel.HotelId, Name = hotel.Name };
 }
