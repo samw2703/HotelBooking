@@ -9,12 +9,12 @@ internal class BookingService(IHotelRepository hotelRepository, IBookingReposito
 {
     public async Task<BookingResponseDto> BookRoomAsync(BookingRequestDto request)
     {
-        var room = await hotelRepository.FindRoomById(request.RoomId);
-
         var existingBooking = await bookingRepository.GetByIdempotencyKey(request.IdempotencyKey);
 
         if (existingBooking != null)
-            MapToBookingResponse(existingBooking);
+            return MapToBookingResponse(existingBooking);
+
+        var room = await hotelRepository.FindRoomById(request.RoomId);
 
         if (room == null)
             throw new RoomNotFoundException();

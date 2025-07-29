@@ -73,9 +73,6 @@ app.MapPost("/bookings", async (BookingRequestDto request, [FromServices] IBooki
 {
     try
     {
-        if (request.NumberOfGuests < 1)
-            return Results.BadRequest("Number of guests must be greater than 0");
-
         var result = await bookingService.BookRoomAsync(request);
 
         return Results.Created($"/bookings/{result.BookingReference}", result);
